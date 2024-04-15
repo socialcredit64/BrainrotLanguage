@@ -1,0 +1,2 @@
+# BrainrotLanguage
+Getting started:
