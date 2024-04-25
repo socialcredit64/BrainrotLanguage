@@ -1,25 +1,42 @@
 #include <iostream>
 #include <fstream>
-  using std::ifstream;
 #include <cstdlib>
+#include <string>
 
 
 int main() {
    std::cout << "Hello World!";
    // Open the file for reading
-   std::ifstream file("example.txt");
-
-   if (!file.is_open()) {
-      std::cerr << "Failed to open the file." << std::endl;
-      return 1;
-   }
-
+   std::fstream fio;
+ 
    std::string line;
-   while (std::getline(file, line)) {
-      std::cout << line << std::endl; // Print each line
+
+
+   fio.open("sample.txt", ios::trunc | ios::out | ios::in);
+
+   // Execute a loop If file successfully Opened
+   while (fio) {
+ 
+      // Read a Line from standard input
+      std::getline(cin, line);
+
+      // Press -1 to exit
+      if (line == "-1")
+         break;
+
+      // Write line in file
+      fio << line << std::endl;
    }
 
-   file.close(); // Close the file
 
+   fio.seekg(0, ios::beg);
+
+   while (fio) {
+      std::getline(fio, line);
+      std::cout << line << endl;
+   }
+
+   fio.close();
+ 
    return 0;
 }
