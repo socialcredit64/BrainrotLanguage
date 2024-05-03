@@ -29,11 +29,11 @@ int main() {
    }
 
 
-   fio.seekg(0, ios::beg);
+   fio.seekg(0, std::ios::beg);
 
    while (fio) {
       std::getline(fio, line);
-      std::cout << line << endl;
+      std::cout << line << std::endl;
    }
 
    fio.close();
