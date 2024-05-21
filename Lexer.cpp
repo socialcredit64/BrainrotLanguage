@@ -2,10 +2,12 @@
 #include <vector>
 #include <cctype>
 #include <string>
+#include <queue>
+#include <optional>
 
-    enum class TokenType {
+// Enum for token types
+enum class TokenType {
     IDENTIFIER,
-    KEYWORD,
     NUMBER,
     STRING,
     OPERATOR,
@@ -14,13 +16,20 @@
     UNKNOWN
 };
 
+// Enum for custom keywords
+enum class CustomKeyword {
+    NUM,
+    PRINT
+};
 
+// Token struct
 struct Token {
     TokenType type;
     std::string lexeme;
+    std::optional<CustomKeyword> customKeyword; // Optional field for custom keywords
 };
 
-
+// Lexer class
 class Lexer {
 public:
     Lexer(const std::string& source)
@@ -65,7 +74,7 @@ private:
             }
             return tokenizeUnknown();
         }
-        return { TokenType::END_OF_FILE, "" };
+        return { TokenType::END_OF_FILE, "", std::nullopt };
     }
 
     // Skip over whitespace characters
@@ -75,17 +84,20 @@ private:
         }
     }
 
-    // Tokenize an identifier or keyword
+    // Tokenize an identifier or custom keyword
     Token tokenizeIdentifierOrKeyword() {
         size_t start = position;
         while (position < source.size() && std::isalnum(source[position])) {
             position++;
         }
         std::string lexeme = source.substr(start, position - start);
-        if (lexeme == "if" || lexeme == "else") {
-            return { TokenType::KEYWORD, lexeme };
+        if (lexeme == "num") {
+            return { TokenType::IDENTIFIER, lexeme, CustomKeyword::NUM };
         }
-        return { TokenType::IDENTIFIER, lexeme };
+        if (lexeme == "print") {
+            return { TokenType::IDENTIFIER, lexeme, CustomKeyword::PRINT };
+        }
+        return { TokenType::IDENTIFIER, lexeme, std::nullopt }; // Default to IDENTIFIER
     }
 
     // Tokenize a number
@@ -95,24 +107,24 @@ private:
             position++;
         }
         std::string lexeme = source.substr(start, position - start);
-        return { TokenType::NUMBER, lexeme };
+        return { TokenType::NUMBER, lexeme, std::nullopt }; // Default to NUMBER
     }
 
     // Tokenize an operator
     Token tokenizeOperator() {
         char current = source[position++];
-        return { TokenType::OPERATOR, std::string(1, current) };
+        return { TokenType::OPERATOR, std::string(1, current), std::nullopt }; // Default to OPERATOR
     }
 
     // Tokenize punctuation
     Token tokenizePunctuation() {
         char current = source[position++];
-        return { TokenType::PUNCTUATION, std::string(1, current) };
+        return { TokenType::PUNCTUATION, std::string(1, current), std::nullopt }; // Default to PUNCTUATION
     }
 
     // Tokenize an unknown character
     Token tokenizeUnknown() {
         char current = source[position++];
-        return { TokenType::UNKNOWN, std::string(1, current) };
+        return { TokenType::UNKNOWN, std::string(1, current), std::nullopt }; // Default to UNKNOWN
     }
 };

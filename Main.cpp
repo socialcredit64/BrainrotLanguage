@@ -5,13 +5,14 @@
 #include <vector>
 #include <cctype>
 
-#include "Lexer.h"
 
+
+#include "Compiler.cpp"
 
 int main() {
-   std::cout << "Printing Contents";
+   //std::cout << "Printing Contents";
 
-   // Open the file for reading
+   // Open file
    std::string line;
    std::ifstream ReadFile("example.txt");
 
@@ -19,14 +20,17 @@ int main() {
       std::cout << line << "\n";
    }
    
-   //executing
-   std::string source = "if (a + 1) { b = 2; }";
+   //token debug string/file toggle
+   std::string source = "num a=10; cout<<a;";
+   //std::string source;
+   //for (int i=0; i<15; i++){
+   //   source += line + "\n";
+   //}
    Lexer lexer(source);
    std::vector<Token> tokens = lexer.tokenize();
 
-   for (const Token& token : tokens) {
-      std::cout << "Token: " << token.lexeme << " (Type: " << static_cast<int>(token.type) << ")\n";
-   }
+   Compiler compiler(tokens);
+   compiler.execute();
 
 
    return 0;
